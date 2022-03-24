@@ -1,25 +1,76 @@
-import React from 'react';
-import logo from './logo.svg';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import API from './api';
 import './App.css';
+import AgeFilter from './components/AgeFilter';
+import Movies from './components/Movies';
+import SearchBox from './components/SearchBox';
+import { SingleMovieType } from './types/movies';
+import { getFilteredMovies } from './utils';
 
 function App() {
+  const [movies, setMovies] = useState<SingleMovieType[] | undefined>([]);
+  const [error, setError] = useState<string | undefined>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [ageQuery, setAgeQuery] = useState<number>(0);
+  const [filteredMovies, setFilteredMovies] = useState<
+    SingleMovieType[] | undefined
+  >([]);
+
+  useEffect(() => {
+    const getMoviesData = async () => {
+      setIsLoading(true);
+      const response = await API.getMovies();
+      setIsLoading(false);
+
+      const { success, movies: allMovies, error } = response;
+
+      if (success) setMovies(allMovies);
+      else setError(error);
+    };
+
+    getMoviesData();
+  }, []);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (error) setError('');
+    setSearchQuery(e.target.value);
+  };
+
+  const handleAgeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (error) setError('');
+    setAgeQuery(Number(e.target.value));
+  };
+
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!searchQuery || !movies?.length) return;
+
+    setIsLoading(true);
+    const currMovies = movies.filter((movie) =>
+      movie.title.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setIsLoading(false);
+    setFilteredMovies(currMovies);
+  };
+
+  if (isLoading) return <p className='no-movie'>Loading...</p>;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <SearchBox
+        handleChange={handleChange}
+        searchQuery={searchQuery}
+        handleSearch={handleSearch}
+      />
+      <AgeFilter handleAgeChange={handleAgeChange} ageQuery={ageQuery} />
+      <Movies
+        filteredMovies={getFilteredMovies(
+          filteredMovies,
+          typeof ageQuery === 'number' ? ageQuery : 0
+        )}
+      />
+    </>
   );
 }
 

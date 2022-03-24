@@ -1,0 +1,17 @@
+.movies-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 60rem;
+    grid-gap: 1rem;
+    margin: 5rem auto;
+}
+
+.no-movie {
+    color: white;
+    font-size: larger;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}

@@ -1,0 +1,24 @@
+form {
+    max-width: 60rem;
+    margin: 3rem auto;
+    text-align: center;
+}
+
+.search-box {
+    display: flex;
+    width: 100%;
+}
+
+.search-box input {
+    padding: 0.375rem;
+    font-size: large;
+    width: 60%;
+}
+
+.search-box button {
+    margin-left: 1rem;
+    font-size: large;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    width: 40%;
+}
