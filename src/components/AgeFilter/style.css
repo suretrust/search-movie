@@ -1,0 +1,12 @@
+.filter-box {
+    max-width: 60rem;
+    text-align: center;
+    margin: 0 auto;
+    font-size: large;
+}
+
+.filter-box input {
+    padding: 0.375rem;
+    font-size: large;
+    width: 60%;
+}
